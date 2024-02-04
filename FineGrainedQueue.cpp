@@ -3,6 +3,7 @@
 
 FineGrainedQueue::FineGrainedQueue(){
     Node* new_node = new Node();
+
     new_node->_value = rand() % 99;
     head = new_node;
     end = new_node;
@@ -22,12 +23,14 @@ void FineGrainedQueue::push_back(){
 void FineGrainedQueue::push_back(int value){
     Node* new_node = new Node();
     Node* prev;
-    std::lock_guard<std::mutex> lock(*queue_mutex);
+    std::mutex node_mutex;
 
     new_node->_value = value;
     prev = end;
-    end->node_mutex->lock();
+    //end->node_mutex->lock();
     prev->_next = new_node;
+    //end->_next = new_node;
+    //end = new_node;
     prev = new_node;
     end->node_mutex->unlock();
     _size++;
@@ -38,15 +41,20 @@ bool FineGrainedQueue::is_empty(){
 }
 
 void FineGrainedQueue::insertIntoMiddle(int value, int pos){
+    std::mutex queue_mutex;
+    std::mutex node_mutex;
+
+    queue_mutex.lock();
 
     if (pos > _size) {
         push_back(value);
+        queue_mutex.unlock();
         return;
     }
 
     Node* new_node = new Node();
     Node* prev, * cur;
-    std::lock_guard<std::mutex> lock(*queue_mutex);
+    //std::lock_guard<std::mutex> lock(*queue_mutex);
 
     prev = this->head;
 
@@ -67,6 +75,7 @@ void FineGrainedQueue::insertIntoMiddle(int value, int pos){
 
     prev->node_mutex->lock();
     cur->node_mutex->lock();
+    queue_mutex.unlock();
     prev->_next = new_node;
     new_node->_next = cur;
     prev->node_mutex->unlock();
