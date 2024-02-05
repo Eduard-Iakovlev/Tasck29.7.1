@@ -5,7 +5,6 @@
 #include "Data.h"
 
 FineGrainedQueue::FineGrainedQueue(){
-   // std::mutex queue_mutex;
     Node* new_node = new Node();
 
     new_node->_value = rand() % 99;
@@ -55,7 +54,6 @@ void FineGrainedQueue::insertIntoMiddle(int value, int pos){
 
     new_node->_value = value;
     new_node->_next = nullptr;
-    //new_node->node_mutex = new std::mutex();
 
     cur = head;
     int cur_pos = 1;
