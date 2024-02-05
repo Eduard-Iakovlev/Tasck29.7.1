@@ -2,6 +2,7 @@
 #include <iostream>
 
 FineGrainedQueue::FineGrainedQueue(){
+    std::mutex queue_mutex;
     Node* new_node = new Node();
 
     new_node->_value = rand() % 99;
@@ -33,14 +34,12 @@ bool FineGrainedQueue::is_empty(){
 }
 
 void FineGrainedQueue::insertIntoMiddle(int value, int pos){
-    std::mutex queue_mutex;
-    //std::mutex node_mutex;
 
-    queue_mutex.lock();
+    queue_mutex->lock();
 
     if (pos > _size) {
         push_back(value);
-        queue_mutex.unlock();
+        queue_mutex->unlock();
         show();
         return;
     }
@@ -63,9 +62,12 @@ void FineGrainedQueue::insertIntoMiddle(int value, int pos){
     }
     cur = prev->_next;
 
+    //std::lock(prev->node_mutex, cur->node_mutex);
+    //std::lock_guard<std::mutex> prev_lock(prev->node_mutex, std::adopt_lock);
+    //std::lock_guard<std::mutex> cur_lock(cur->node_mutex, std::adopt_lock);
     prev->node_mutex->lock();
     cur->node_mutex->lock();
-    queue_mutex.unlock();
+    queue_mutex->unlock();
     prev->_next = new_node;
     new_node->_next = cur;
     prev->node_mutex->unlock();
