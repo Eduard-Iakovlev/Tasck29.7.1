@@ -2,6 +2,6 @@
 
 int main(){
 	FineGrainedQueue fgq;
-	fgq.insertIntoMiddle(111, 8);
+	fgq.insertIntoMiddle(111, 15);
 
 }

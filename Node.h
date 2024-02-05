@@ -1,6 +1,7 @@
 #pragma once
 #include <mutex>
 
+
 struct Node{
 	Node();
 	int _value;

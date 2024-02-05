@@ -1,8 +1,5 @@
 #pragma once
 #include "Node.h"
-#include <queue>
-#include <condition_variable>
-#include <shared_mutex>
 
 class FineGrainedQueue{
 public:
@@ -17,6 +14,6 @@ private:
 	Node* head;
 	Node* end;
 	std::mutex* queue_mutex;
-	int _size;
+	int _size = 1;
 };
 
