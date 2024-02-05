@@ -1,8 +1,11 @@
 #include "FineGrainedQueue.h"
+#include <future>
+#include <conio.h>
 #include <iostream>
+#include "Data.h"
 
 FineGrainedQueue::FineGrainedQueue(){
-    std::mutex queue_mutex;
+   // std::mutex queue_mutex;
     Node* new_node = new Node();
 
     new_node->_value = rand() % 99;
@@ -12,6 +15,8 @@ FineGrainedQueue::FineGrainedQueue(){
         push_back();
     }
     show();
+    std::cout << " To exit, press ESC\n";
+
 }
 
 void FineGrainedQueue::push_back(){
@@ -35,23 +40,22 @@ bool FineGrainedQueue::is_empty(){
 
 void FineGrainedQueue::insertIntoMiddle(int value, int pos){
 
-    queue_mutex->lock();
-
     if (pos > _size) {
+        queue_mutex.lock();
         push_back(value);
-        queue_mutex->unlock();
-        show();
+        queue_mutex.unlock();
         return;
     }
 
     Node* new_node = new Node();
     Node* prev, * cur;
 
+    queue_mutex.lock();
     prev = this->head;
 
     new_node->_value = value;
     new_node->_next = nullptr;
-    new_node->node_mutex = new std::mutex();
+    //new_node->node_mutex = new std::mutex();
 
     cur = head;
     int cur_pos = 1;
@@ -62,18 +66,14 @@ void FineGrainedQueue::insertIntoMiddle(int value, int pos){
     }
     cur = prev->_next;
 
-    //std::lock(prev->node_mutex, cur->node_mutex);
-    //std::lock_guard<std::mutex> prev_lock(prev->node_mutex, std::adopt_lock);
-    //std::lock_guard<std::mutex> cur_lock(cur->node_mutex, std::adopt_lock);
-    prev->node_mutex->lock();
-    cur->node_mutex->lock();
-    queue_mutex->unlock();
+    prev->node_mutex.lock();
+    cur->node_mutex.lock();
+    queue_mutex.unlock();
     prev->_next = new_node;
     new_node->_next = cur;
-    prev->node_mutex->unlock();
-    cur->node_mutex->unlock();
-
-    show();
+    prev->node_mutex.unlock();
+    cur->node_mutex.unlock();
+    _size++;
 }
 
 void FineGrainedQueue::show(){
@@ -87,4 +87,54 @@ void FineGrainedQueue::show(){
     std::cout << new_node->_value;
     std::cout << "\n size = " << _size << " elements" << std::endl;
 
+}
+
+void FineGrainedQueue::enter_data() {
+    Data<int> data('0', '9');
+    std::cout << "\n Enter data: \n";
+
+    std::cout << " value-1 = ";
+    _val1 = data.input();
+    data.clear();
+    std::cout << " position-1 = ";
+    _pos1 = data.input();
+    data.clear();
+    std::cout << std::endl;
+
+    std::cout << " value-2 = ";
+    _val2 = data.input();
+    data.clear();
+    std::cout << " position-2 = ";
+    _pos2 = data.input();
+    data.clear();
+    std::cout << std::endl;
+
+    std::cout << " value-3 = ";
+    _val3 = data.input();
+    data.clear();
+    std::cout << " position-3 = ";
+    _pos3 = data.input();
+    data.clear();
+    std::cout << std::endl;
+}
+
+void FineGrainedQueue::menu(){ 
+    if (_getch() == _menu) exit(0);
+}
+
+void FineGrainedQueue::start(){
+    while (true) {
+        enter_data();
+
+        std::future<void> insert1 = std::async(std::launch::async, &FineGrainedQueue::insertIntoMiddle, this, _val1, _pos1);
+        std::future<void> insert2 = std::async(std::launch::async, &FineGrainedQueue::insertIntoMiddle, this, _val2, _pos2);
+        std::future<void> insert3 = std::async(std::launch::async, &FineGrainedQueue::insertIntoMiddle, this, _val3, _pos3);
+        
+        insert1.wait();
+        insert2.wait();
+        insert3.wait();
+        show();
+        std::cout << " To exit, press ESC\n to continue, press enykey";
+        menu();
+    }
 }

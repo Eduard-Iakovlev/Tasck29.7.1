@@ -132,6 +132,7 @@
     <ClCompile Include="Tasck29.7.1.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Data.h" />
     <ClInclude Include="FineGrainedQueue.h" />
     <ClInclude Include="Node.h" />
   </ItemGroup>
