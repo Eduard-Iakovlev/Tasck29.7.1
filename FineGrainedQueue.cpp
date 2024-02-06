@@ -11,20 +11,13 @@ FineGrainedQueue::FineGrainedQueue(){
     head = new_node;
     end = new_node;
     for (int i = 0; i < 4; i++) {
-        push_back();
+        push_back(rand() % 99);
     }
     show();
     std::cout << " To exit, press ESC\n";
 
 }
 
-void FineGrainedQueue::push_back(){
-    Node* new_node = new Node();
-    new_node->_value = rand() % 99;
-    end->_next = new_node;
-    end = new_node;
-    _size++;
-}
 void FineGrainedQueue::push_back(int value){
     Node* new_node = new Node();
     new_node->_value = value;
@@ -78,11 +71,10 @@ void FineGrainedQueue::show(){
     Node* new_node = head;
     if (is_empty()) return;
     std::cout << " List:" << std::endl;
-    while (new_node->_next != nullptr) {
+    while (new_node != nullptr) {
         std::cout << new_node->_value << " ";
         new_node = new_node->_next;
     }
-    std::cout << new_node->_value;
     std::cout << "\n size = " << _size << " elements" << std::endl;
 
 }
@@ -132,7 +124,7 @@ void FineGrainedQueue::start(){
         insert2.wait();
         insert3.wait();
         show();
-        std::cout << " To exit, press ESC\n to continue, press enykey";
+        std::cout << " To exit, press ESC\n to continue, press any key";
         menu();
     }
 }

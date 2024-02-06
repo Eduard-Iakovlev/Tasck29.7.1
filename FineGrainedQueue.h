@@ -4,7 +4,6 @@
 class FineGrainedQueue{
 public:
 	FineGrainedQueue();
-	void push_back();
 	void push_back(int value);
 	bool is_empty();
 	void insertIntoMiddle(int value, int pos);
