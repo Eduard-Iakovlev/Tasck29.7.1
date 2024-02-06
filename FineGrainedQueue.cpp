@@ -76,7 +76,6 @@ void FineGrainedQueue::show(){
         new_node = new_node->_next;
     }
     std::cout << "\n size = " << _size << " elements" << std::endl;
-
 }
 
 void FineGrainedQueue::enter_data() {

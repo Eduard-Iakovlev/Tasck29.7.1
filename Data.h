@@ -59,4 +59,3 @@ private:
 	int _counter{ 0 };
 };
 
-#pragma once
